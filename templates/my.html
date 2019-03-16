@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html>
+<head>
+
+</head>
 <body>
+    <h1>Welcom to My Page!</h1>
 </body>
 <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
 <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "{{.apiKey}}",
-    authDomain: "{{.authDomain}}",
-    databaseURL: "{{.databaseURL}}",
-    projectId: "{{.projectId}}",
-    storageBucket: "{{.storageBucket}}",
-    messagingSenderId: "{{.messagingSenderId}}",
-  };
-  firebase.initializeApp(config);
+    // Initialize Firebase
+    var config = {
+        apiKey: "{{.apiKey}}",
+        authDomain: "{{.authDomain}}",
+        databaseURL: "{{.databaseURL}}",
+        projectId: "{{.projectId}}",
+        storageBucket: "{{.storageBucket}}",
+        messagingSenderId: "{{.messagingSenderId}}",
+    };
+    firebase.initializeApp(config);
+    // ユーザのサインイン状態の判定
+    firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        console.log('sign in');
+    } else {
+        // No user is signed in.
+        console.log('sign out');
+        location.href = location.protocol + location.hostname + "/";
+    }
+    });
 </script>
 </html>
