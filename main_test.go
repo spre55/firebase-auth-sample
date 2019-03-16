@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -21,15 +22,6 @@ func TestIndexHandler(t *testing.T) {
 			"unexpected status: got (%v) want (%v)",
 			status,
 			http.StatusOK,
-		)
-	}
-
-	expected := "Sign Up!"
-	if rr.Body.String() != expected {
-		t.Errorf(
-			"unexpected body: got (%v) want (%v)",
-			rr.Body.String(),
-			expected,
 		)
 	}
 }
@@ -51,14 +43,27 @@ func TestMyHandler(t *testing.T) {
 			http.StatusOK,
 		)
 	}
+}
 
-	expected := "My Page!"
-	if rr.Body.String() != expected {
-		t.Errorf(
-			"unexpected body: got (%v) want (%v)",
-			rr.Body.String(),
-			expected,
-		)
+func TestGetEnvVars(t *testing.T) {
+	envVars := getEnvVars()
+	expected := map[string]string{
+		"apiKey":            os.Getenv("API_KEY"),
+		"authDomain":        os.Getenv("AUTH_DOMAIN"),
+		"databaseURL":       os.Getenv("DATABASE_URL"),
+		"projectId":         os.Getenv("PROJECT_ID"),
+		"storageBucket":     os.Getenv("STORAGE_BUCKET"),
+		"messagingSenderId": os.Getenv("MESSAGING_SENDER_ID"),
+	}
+
+	for key, value := range expected {
+		if envVars[key] != value {
+			t.Errorf(
+				"unexpected env: got (%v) want (%v)",
+				envVars[key],
+				value,
+			)
+		}
 	}
 }
 
