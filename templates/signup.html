@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 </head>
+
 <body>
-    <h1>Welcom to Sign Up Page!</h1>
+    <h1>Welcome to Sign Up Page!</h1>
     <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading...</div>
 </body>
 <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
 <script>
-    var config = {
+    let config = {
         apiKey: "{{.apiKey}}",
         authDomain: "{{.authDomain}}",
         databaseURL: "{{.databaseURL}}",
@@ -19,22 +22,40 @@
         messagingSenderId: "{{.messagingSenderId}}",
     };
     firebase.initializeApp(config);
-    // ユーザのサインイン状態の判定
-    firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        console.log('sign in');
-        location.href = "/my";
-    } else {
-        console.log('sign out');
-    }
-    });
-
-    // サインアップ/サインインフォームのUI
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', {
-        signInOptions: [
-            firebase.auth.EmailAuthProvider.PROVIDER_ID
+    let uiConfig = {
+        callbacks: {
+            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                return true;
+            },
+            uiShown: function () {
+                document.getElementById('loader').style.display = 'none';
+            }
+        },
+        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+        signInFlow: 'popup',
+        signInSuccessUrl: 'my',
+        signInOptions: [{
+                provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                requireDisplayName: false
+            },
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            firebase.auth.GithubAuthProvider.PROVIDER_ID
         ],
+    };
+    // サインアップ/サインインフォームのUI
+    let ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+    // ユーザのサインイン状態の判定
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            console.log('sign in : ', user);
+        } else {
+            console.log('sign out');
+        }
     });
 </script>
+
 </html>
