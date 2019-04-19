@@ -9,7 +9,13 @@
     <div id="message"></div>
     <div id="email"></div>
     <div id="emailVerified"></div>
+    <div id="providers"></div>
     <button onClick="signOut();">ログアウトするぞ</button>
+
+    <button onclick="linkGoogle();">Googleとリンク</button>
+    <button onclick="linkFacebook();">Facebookとリンク</button>
+    <button onclick="linkTwitter();">Twitterとリンク</button>
+    <button onclick="linkGithub();">Githubとリンク</button>
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
@@ -31,6 +37,7 @@
             document.getElementById('message').innerHTML = "ようこそ " + user.displayName;
             document.getElementById('email').innerHTML = "Email: " + user.email;
             document.getElementById('emailVerified').innerHTML = "EmailVerify: " + user.emailVerified;
+            document.getElementById('providers').innerHTML = "Provider: " + user.provider;
 
             console.log('sign in');
         } else {
@@ -39,6 +46,37 @@
             location.href = "/";
         }
     });
+
+    function linkGoogle() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        linkProvider(provider);
+    }
+
+    function linkFacebook() {
+        var provider = new firebase.auth.FacebookAuthProvider();
+        linkProvider(provider);
+    }
+
+    function linkTwitter() {
+        var provider = new firebase.auth.TwitterAuthProvider();
+        linkProvider(provider);
+    }
+
+    function linkGithub() {
+        var provider = new firebase.auth.GithubAuthProvider();
+        linkProvider(provider);
+    }
+
+    function linkProvider(provider) {
+        auth.currentUser.linkWithPopup(provider).then(function (result) {
+            // Accounts successfully linked.
+            var credential = result.credential;
+            var user = result.user;
+
+        }).catch(function (error) {
+
+        });
+    }
 
     function signOut() {
         firebase.auth().signOut().then(function () {
