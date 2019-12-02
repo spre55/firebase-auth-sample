@@ -2,129 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
-    <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "{{.apiKey}}",
-            authDomain: "{{.authDomain}}",
-            databaseURL: "{{.databaseURL}}",
-            projectId: "{{.projectId}}",
-            storageBucket: "{{.storageBucket}}",
-            messagingSenderId: "{{.messagingSenderId}}",
-            appId: "{{.appId}}",
-        };
-        firebase.initializeApp(config);
-        // ユーザのサインイン状態の判定
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                // サインインできてるとき
-                // ちょっとごちゃごちゃ表示いじってるだけ
-                document.getElementById('message').innerHTML = "ようこそ " + user.displayName;
-                document.getElementById('image').src = user.photoURL;
-                document.getElementById('email').innerHTML = "Email: " + user.email;
-                document.getElementById('emailVerified').innerHTML = "EmailVerify: " + user.emailVerified;
-
-                var element = document.getElementById('providers')
-                user.providerData.map(provider => {
-                    var div = document.createElement('div');
-                    div.textContent = provider.providerId;
-                    element.appendChild(div);
-
-                    var socialLink = document.getElementById('socialLink');
-                    socialLink.querySelector('#' + provider.providerId.slice(0, -4) + ' .off').style.display =
-                        "inline-block";
-                    socialLink.querySelector('#' + provider.providerId.slice(0, -4) + ' .on').style.display =
-                        "none";
-                });
-                console.log('sign in');
-            } else {
-                // No user is signed in.
-                console.log('sign out');
-                location.href = "/";
-            }
-        });
-
-        /*
-         *  ソーシャルリンク
-         */
-        function linkGoogle() {
-            var provider = new firebase.auth.GoogleAuthProvider();
-            linkProvider(provider);
-        }
-
-        function linkFacebook() {
-            var provider = new firebase.auth.FacebookAuthProvider();
-            linkProvider(provider);
-        }
-
-        function linkTwitter() {
-            var provider = new firebase.auth.TwitterAuthProvider();
-            linkProvider(provider);
-        }
-
-        function linkGithub() {
-            var provider = new firebase.auth.GithubAuthProvider();
-            linkProvider(provider);
-        }
-
-        function linkProvider(provider) {
-            var user = firebase.auth().currentUser
-            user.linkWithPopup(provider).then(result => {
-                // Accounts successfully linked.
-                // var credential = result.credential;
-                // var user = result.user;
-                // user.reload();
-                location.href = "/my";
-            }).catch(function (error) {
-                console.log(error)
-            });
-        }
-
-        /*
-         *  ソーシャルリンク解除
-         */
-        function unlinkGoogle() {
-            var provider = new firebase.auth.GoogleAuthProvider();
-            unlinkProvider(provider.providerId);
-        }
-
-        function unlinkFacebook() {
-            var provider = new firebase.auth.FacebookAuthProvider();
-            unlinkProvider(provider.providerId);
-        }
-
-        function unlinkTwitter() {
-            var provider = new firebase.auth.TwitterAuthProvider();
-            unlinkProvider(provider.providerId);
-        }
-
-        function unlinkGithub() {
-            var provider = new firebase.auth.GithubAuthProvider();
-            unlinkProvider(provider.providerId);
-        }
-
-        function unlinkProvider(providerId) {
-            var user = firebase.auth().currentUser
-            user.unlink(providerId).then(function () {
-                // Auth provider unlinked from account
-                // user.reload();
-                location.href = "/my";
-            }).catch(function (error) {
-                // An error happened
-                console.log(error)
-            });
-        }
-
-        // ログアウト
-        function signOut() {
-            firebase.auth().signOut().then(function () {
-                console.log('success sign out.');
-            }).catch(function (error) {
-                console.log('error: ', error);
-            });
-        }
-    </script>
 </head>
 
 <body>
@@ -134,30 +11,10 @@
     <div id="email"></div>
     <div id="emailVerified"></div>
     <div id="providers"></div>
-    <button onClick="signOut();">ログアウトするぞ</button>
+    <button>ログアウトするぞ</button>
 
     <div id="socialLink" style="margin: 10px;">
         <div>ソーシャルリンク</div>
-        <div id="google">
-            Google:
-            <button class="on" onclick="linkGoogle();">リンク</button>
-            <button class="off" onclick="unlinkGoogle();" style="display: none;">解除</button>
-        </div>
-        <div id="facebook">
-            Facebook:
-            <button class="on" onclick="linkFacebook();">リンク</button>
-            <button class="off" onclick="unlinkFacebook();" style="display: none;">解除</button>
-        </div>
-        <div id="twitter">
-            Twitter:
-            <button class="on" onclick="linkTwitter();">リンク</button>
-            <button class="off" onclick="unlinkTwitter();" style="display: none;">解除</button>
-        </div>
-        <div id="github">
-            Github:
-            <button class="on" onclick="linkGithub();">リンク</button>
-            <button class="off" onclick="unlinkGithub();" style="display: none;">解除</button>
-        </div>
     </div>
 </body>
 

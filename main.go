@@ -28,7 +28,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := template.Must(template.ParseFiles("templates/signup.html"))
-	if err := t.ExecuteTemplate(w, "signup.html", getEnvVars()); err != nil {
+	if err := t.ExecuteTemplate(w, "signup.html", nil); err != nil {
 		log.Fatal(err)
 	}
 
@@ -42,20 +42,7 @@ func myHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := template.Must(template.ParseFiles("templates/my.html"))
-	if err := t.ExecuteTemplate(w, "my.html", getEnvVars()); err != nil {
+	if err := t.ExecuteTemplate(w, "my.html", nil); err != nil {
 		log.Fatal(err)
-	}
-}
-
-// getEnvVars ... 環境変数をマップとして取得
-func getEnvVars() map[string]string {
-	return map[string]string{
-		"apiKey":            os.Getenv("API_KEY"),
-		"authDomain":        os.Getenv("AUTH_DOMAIN"),
-		"databaseURL":       os.Getenv("DATABASE_URL"),
-		"projectId":         os.Getenv("PROJECT_ID"),
-		"storageBucket":     os.Getenv("STORAGE_BUCKET"),
-		"messagingSenderId": os.Getenv("MESSAGING_SENDER_ID"),
-		"appId":             os.Getenv("APP_ID"),
 	}
 }
