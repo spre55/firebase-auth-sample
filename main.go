@@ -56,5 +56,6 @@ func getEnvVars() map[string]string {
 		"projectId":         os.Getenv("PROJECT_ID"),
 		"storageBucket":     os.Getenv("STORAGE_BUCKET"),
 		"messagingSenderId": os.Getenv("MESSAGING_SENDER_ID"),
+		"appId":             os.Getenv("APP_ID"),
 	}
 }

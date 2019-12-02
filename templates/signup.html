@@ -2,8 +2,57 @@
 <html>
 
 <head>
-    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css" />
+    <script>
+        const config = {
+            apiKey: "{{.apiKey}}",
+            authDomain: "{{.authDomain}}",
+            databaseURL: "{{.databaseURL}}",
+            projectId: "{{.projectId}}",
+            storageBucket: "{{.storageBucket}}",
+            messagingSenderId: "{{.messagingSenderId}}",
+            appId: "{{.appId}}",
+        };
+        console.log(config)
+
+        firebase.initializeApp(config);
+        const uiConfig = {
+            callbacks: {
+                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                    return true;
+                },
+                uiShown: function () {
+                    document.getElementById('loader').style.display = 'none';
+                }
+            },
+            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+            signInFlow: 'popup',
+            signInSuccessUrl: 'my',
+            signInOptions: [
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+                firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+                firebase.auth.GithubAuthProvider.PROVIDER_ID,
+                firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            ],
+        };
+        // サインアップ/サインインフォームのUI
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', uiConfig);
+
+        // ユーザのサインイン状態の判定
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('sign in : ', user);
+            } else {
+                console.log('sign out');
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -11,51 +60,5 @@
     <div id="firebaseui-auth-container"></div>
     <div id="loader">Loading...</div>
 </body>
-<script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
-<script>
-    let config = {
-        apiKey: "{{.apiKey}}",
-        authDomain: "{{.authDomain}}",
-        databaseURL: "{{.databaseURL}}",
-        projectId: "{{.projectId}}",
-        storageBucket: "{{.storageBucket}}",
-        messagingSenderId: "{{.messagingSenderId}}",
-    };
-    firebase.initializeApp(config);
-    let uiConfig = {
-        callbacks: {
-            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-                return true;
-            },
-            uiShown: function () {
-                document.getElementById('loader').style.display = 'none';
-            }
-        },
-        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-        signInFlow: 'popup',
-        signInSuccessUrl: 'my',
-        signInOptions: [{
-                provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                requireDisplayName: false
-            },
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-            firebase.auth.GithubAuthProvider.PROVIDER_ID
-        ],
-    };
-    // サインアップ/サインインフォームのUI
-    let ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
-
-    // ユーザのサインイン状態の判定
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            console.log('sign in : ', user);
-        } else {
-            console.log('sign out');
-        }
-    });
-</script>
 
 </html>
